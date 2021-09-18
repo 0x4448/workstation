@@ -29,6 +29,7 @@ function InstallPythonFromSource() {
     local tempdir
 
     # Download and extract
+    cwd=$(pwd)
     tempdir=$(mktemp -d)
     cd "$tempdir"
     wget "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz"
