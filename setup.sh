@@ -64,7 +64,7 @@ function InstallPythonFromSource() {
 
 ### Main ###
 
-export PATH="$HOME/.local/bin:$HOME.local/python/$PYTHON_VERSION/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.local/python/$PYTHON_VERSION/bin:$PATH"
 mkdir -p "$HOME/.local/bin"
 
 if ! "$HOME/.local/bin/python3" --version 2> /dev/null | grep -q "$PYTHON_VERSION"; then
