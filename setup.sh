@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+### Variables ###
 
 PYTHON_VERSION=3.9.7
-
-set -euo pipefail
 
 
 ### Functions ###
@@ -37,19 +38,36 @@ function InstallPythonFromSource() {
     cd "Python-$PYTHON_VERSION"
 
     # Configure, build, and install
-    ./configure --enable-optimizations
+    ./configure --enable-optimizations --prefix="$HOME/.local/python/$PYTHON_VERSION"
     make "-j$(grep -c ^processor < /proc/cpuinfo)"
-    sudo make install
+    make install
 
     # Cleanup
     cd "$cwd"
-    sudo rm -rf "$tempdir"
+    rm -rf "$tempdir"
+
+    # Create symlinks
+    ln -s "$HOME/.local/python/$PYTHON_VERSION/bin/python3" "$HOME/.local/bin/python3"
+    ln -s "$HOME/.local/python/$PYTHON_VERSION/bin/pip3" "$HOME/.local/bin/pip3"
+
+    # Update pip
+    python3 -m pip install --upgrade pip
+
+    # Install pipx
+    pip3 install pipx
+
+    # Install pipx packages
+    pipx install --include-deps ansible
+    pipx install pre-commit
 }
 
 
 ### Main ###
 
-if ! /usr/local/bin/python3 --version 2> /dev/null | grep -q "$PYTHON_VERSION"; then
+export PATH="$HOME/.local/bin:$HOME.local/python/$PYTHON_VERSION/bin:$PATH"
+mkdir -p "$HOME/.local/bin"
+
+if ! "$HOME/.local/bin/python3" --version 2> /dev/null | grep -q "$PYTHON_VERSION"; then
     if uname -a | grep -q 'Debian\|buntu\|Mint'; then
         InstallDebianPythonBuildDeps
     else
