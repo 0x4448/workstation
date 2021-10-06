@@ -3,7 +3,7 @@ set -euo pipefail
 
 ### Variables ###
 
-PYTHON_VERSION=3.9.7
+PYTHON_VERSION=3.10.0
 
 
 ### Functions ###
